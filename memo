@@ -1,0 +1,2 @@
+gcc -shared -fPIC -g -ggdb -o libtest.so libtest.c
+gcc ./libtest.so -o main main.c  
