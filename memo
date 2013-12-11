@@ -1,2 +1,68 @@
-gcc -shared -fPIC -g -ggdb -o libtest.so libtest.c
-gcc ./libtest.so -o main main.c  
+
+export SEGFAULT_SIGNALS=all
+export LD_PRELOAD=/lib/i386-linux-gnu/libSegFault.so
+
+
+gcc -ggdb -g -o main main.c
+
+
+*** Segmentation fault
+Register dump:
+
+ EAX: 00000000   EBX: b7719000   ECX: bf902c34   EDX: bf902bc4
+ ESI: 00000000   EDI: 00000000   EBP: bf902b88   ESP: bf902b60
+
+ EIP: 0804841c   EFLAGS: 00210286
+
+ CS: 0073   DS: 007b   ES: 007b   FS: 0000   GS: 0033   SS: 007b
+
+ Trap: 0000000e   Error: 00000006   OldMask: 00000000
+ ESP/signal: bf902b60   CR2: 00000000
+
+ FPUCW: ffff037f   FPUSW: ffff0000   TAG: ffffffff
+ IPOFF: 00000000   CSSEL: 0000   DATAOFF: 00000000   DATASEL: 0000
+
+ ST(0) 0000 0000000000000000   ST(1) 0000 0000000000000000
+ ST(2) 0000 0000000000000000   ST(3) 0000 0000000000000000
+ ST(4) 0000 0000000000000000   ST(5) 0000 0000000000000000
+ ST(6) 0000 0000000000000000   ST(7) 0000 0000000000000000
+
+Backtrace:
+./main[0x804841c]
+./main[0x8048444]
+/lib/i386-linux-gnu/libc.so.6(__libc_start_main+0xf3)[0xb758c4d3]
+./main[0x8048341]
+
+Memory map:
+
+08048000-08049000 r-xp 00000000 08:01 441864     /home/oguni/develop/segmentation-fault/main
+08049000-0804a000 r--p 00000000 08:01 441864     /home/oguni/develop/segmentation-fault/main
+0804a000-0804b000 rw-p 00001000 08:01 441864     /home/oguni/develop/segmentation-fault/main
+08677000-08698000 rw-p 00000000 00:00 0          [heap]
+b7553000-b756f000 r-xp 00000000 08:01 1049295    /lib/i386-linux-gnu/libgcc_s.so.1
+b756f000-b7570000 r--p 0001b000 08:01 1049295    /lib/i386-linux-gnu/libgcc_s.so.1
+b7570000-b7571000 rw-p 0001c000 08:01 1049295    /lib/i386-linux-gnu/libgcc_s.so.1
+b7571000-b7573000 rw-p 00000000 00:00 0 
+b7573000-b7716000 r-xp 00000000 08:01 1064634    /lib/i386-linux-gnu/libc-2.15.so
+b7716000-b7717000 ---p 001a3000 08:01 1064634    /lib/i386-linux-gnu/libc-2.15.so
+b7717000-b7719000 r--p 001a3000 08:01 1064634    /lib/i386-linux-gnu/libc-2.15.so
+b7719000-b771a000 rw-p 001a5000 08:01 1064634    /lib/i386-linux-gnu/libc-2.15.so
+b771a000-b771d000 rw-p 00000000 00:00 0 
+b7731000-b7734000 r-xp 00000000 08:01 1088720    /lib/i386-linux-gnu/libSegFault.so
+b7734000-b7735000 r--p 00002000 08:01 1088720    /lib/i386-linux-gnu/libSegFault.so
+b7735000-b7736000 rw-p 00003000 08:01 1088720    /lib/i386-linux-gnu/libSegFault.so
+b7736000-b7738000 rw-p 00000000 00:00 0 
+b7738000-b7739000 r-xp 00000000 00:00 0          [vdso]
+b7739000-b7759000 r-xp 00000000 08:01 1089542    /lib/i386-linux-gnu/ld-2.15.so
+b7759000-b775a000 r--p 0001f000 08:01 1089542    /lib/i386-linux-gnu/ld-2.15.so
+b775a000-b775b000 rw-p 00020000 08:01 1089542    /lib/i386-linux-gnu/ld-2.15.so
+bf8e4000-bf905000 rw-p 00000000 00:00 0          [stack]
+[1]    11555 segmentation fault (core dumped)  ./main
+
+addr2line -e main 0x804841c 
+/home/oguni/develop/segmentation-fault/main.c:8
+
+mac
+
+
+https://github.com/alonbl/libsegfault
