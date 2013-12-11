@@ -64,5 +64,4 @@ addr2line -e main 0x804841c
 
 mac
 
-
 https://github.com/alonbl/libsegfault
